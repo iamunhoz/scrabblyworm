@@ -6,17 +6,25 @@ var score
 
 func _ready():
 	randomize()
+	$HUD/StartButton.hide()
 	new_game()
 
 
 func game_over():
 	$ScoreTimer.stop()
 	$CritterTimer.stop()
+	$HUD.show_game_over()
+	get_tree().call_group("mob", "queue_free")
+	$Music.stop()
+	$Music/DeathSound.play()
 
 func new_game():
 	score = 0
+	$HUD.update_score(score)
+	$HUD.show_message("Get Ready")
 	$Player.start($PlayerStartPosition.position)
 	$StartTimer.start()
+	$Music.play()
 
 func _on_StartTimer_timeout():
 	$CritterTimer.start()
@@ -24,6 +32,7 @@ func _on_StartTimer_timeout():
 
 func _on_ScoreTimer_timeout():
 	score += 10
+	$HUD.update_score(score)
 
 
 func _on_CritterTimer_timeout():
